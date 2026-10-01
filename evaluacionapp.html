@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario de Evaluación</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        /* Eliminar barras de desplazamiento para la captura limpia */
+        textarea { resize: none; overflow: hidden; }
+        /* Estilos para inputs al imprimir/capturar */
+        .capture-mode input, .capture-mode textarea {
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            border-bottom: 1px solid #d1d5db !important;
+            border-radius: 0 !important;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+        }
+        .capture-mode .radio-label {
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 antialiased min-h-screen py-8 px-4 sm:px-6 lg:px-8">
+
+    <div class="max-w-4xl mx-auto">
+        
+        <!-- Contenedor de Botones (No se verá en la imagen) -->
+        <div class="flex justify-end mb-4 no-capture space-x-4">
+            <button onclick="clearForm()" class="px-4 py-2 bg-red-100 text-red-600 rounded-lg shadow hover:bg-red-200 transition font-medium text-sm">
+                Limpiar Formulario
+            </button>
+            <button onclick="generateImage()" id="btn-generate" class="px-6 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition font-semibold text-sm flex items-center">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                Descargar Imagen
+            </button>
+        </div>
+
+        <!-- AREA DE CAPTURA -->
+        <div id="capture-area" class="bg-white rounded-xl shadow-lg p-6 sm:p-10 border-t-8 border-blue-600 relative">
+            
+            <div class="text-center mb-10 border-b pb-6">
+                <h1 class="text-3xl font-bold text-slate-900 tracking-widest uppercase mb-2">E V A L U A C I Ó N</h1>
+                <input type="text" value="Del 1 al 29 De Agosto Del 2026" class="text-center w-full max-w-md mx-auto text-slate-500 font-medium bg-transparent border-b border-transparent hover:border-gray-300 focus:border-blue-500 focus:ring-0 outline-none transition px-2 py-1 italic" />
+                <div class="mt-4">
+                    <input type="text" placeholder="Nombre del Evaluado" class="text-center text-xl w-full max-w-md mx-auto text-slate-800 font-semibold bg-transparent border-b-2 border-gray-300 hover:border-blue-400 focus:border-blue-600 focus:ring-0 outline-none transition px-2 py-2" />
+                </div>
+            </div>
+
+            <div class="space-y-8">
+                
+                <section>
+                    <h2 class="text-lg font-bold text-blue-800 uppercase border-b border-blue-100 pb-2 mb-4">Métricas de Crecimiento</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="flex flex-col"><label class="text-sm font-semibold mb-1">Tareas:</label><input type="number" min="0" data-points-input class="form-input rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-gray-50 px-3 py-2 border w-full"></div>
+                        <div class="flex flex-col"><label class="text-sm font-semibold mb-1">Devocional Caminando Con Jesús:</label><input type="number" min="0" data-points-input class="form-input rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-gray-50 px-3 py-2 border w-full"></div>
+                        <div class="flex flex-col"><label class="text-sm font-semibold mb-1">Matutinos:</label><input type="number" min="0" data-points-input class="form-input rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-gray-50 px-3 py-2 border w-full"></div>
+                        <div class="flex flex-col"><label class="text-sm font-semibold mb-1">Ayunos:</label><input type="number" min="0" data-points-input class="form-input rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-gray-50 px-3 py-2 border w-full"></div>
+                        
+                        <div class="flex flex-col md:col-span-2">
+                            <label class="text-sm font-semibold mb-1">Apuntes de las clases de liderazgo:</label>
+                            <div class="flex gap-2">
+                                <input type="number" min="0" placeholder="Cant." data-points-input class="form-input rounded-md border-gray-300 shadow-sm focus:border-blue-500 bg-white px-3 py-2 border w-24 text-center">
+                                <textarea class="form-input rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-gray-50 px-3 py-2 border w-full auto-expand" placeholder="Detalles de los apuntes..." rows="1"></textarea>
+                            </div>
+                        </div>
+                        
+                        <div class="flex flex-col md:col-span-2">
+                            <label class="text-sm font-semibold mb-1">Apuntes de las Enseñanzas de Los Servicios:</label>
+                            <div class="flex gap-2">
+                                <input type="number" min="0" placeholder="Cant." data-points-input class="form-input rounded-md border-gray-300 shadow-sm focus:border-blue-500 bg-white px-3 py-2 border w-24 text-center">
+                                <textarea class="form-input rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-gray-50 px-3 py-2 border w-full auto-expand" placeholder="Detalles de los apuntes..." rows="1"></textarea>
+                            </div>
+                        </div>
+                        
+                        <div class="flex flex-col"><label class="text-sm font-semibold mb-1 text-slate-700">¿Cuántas veces asistí a las reuniones?</label><input type="number" min="0" data-points-input class="form-input rounded-md border-gray-300 shadow-sm bg-gray-50 px-3 py-2 border w-full"></div>
+                        <div class="flex flex-col"><label class="text-sm font-semibold mb-1 text-slate-700">¿Cuántas veces evangelicé (Red o Personal)?</label><input type="number" min="0" data-points-input class="form-input rounded-md border-gray-300 shadow-sm bg-gray-50 px-3 py-2 border w-full"></div>
+                        <div class="flex flex-col"><label class="text-sm font-semibold mb-1 text-slate-700">¿Cuántas veces Ofrendé?</label><input type="number" min="0" data-points-input class="form-input rounded-md border-gray-300 shadow-sm bg-gray-50 px-3 py-2 border w-full"></div>
+                        <div class="flex flex-col"><label class="text-sm font-semibold mb-1 text-slate-700">¿Cuántas veces entregué mis Diezmos? <span class="font-normal italic text-xs">(Con Integridad)</span></label><input type="number" min="0" data-points-input class="form-input rounded-md border-gray-300 shadow-sm bg-gray-50 px-3 py-2 border w-full"></div>
+                    </div>
+                </section>
+
+                <section>
+                    <h2 class="text-lg font-bold text-blue-800 uppercase border-b border-blue-100 pb-2 mb-4">Evaluación de Compromiso y Disciplina</h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        
+                        <!-- Puntos 1 -->
+                        <div class="bg-gray-50 p-4 rounded-lg border border-gray-100">
+                            <p class="text-sm font-semibold mb-2">¿Donaste en especie (artículos de limpieza o más)?</p>
+                            <div class="flex space-x-4">
+                                <label class="radio-label flex items-center cursor-pointer"><input type="radio" name="donacion_limpieza" value="1" data-points="1" class="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"> <span class="text-sm">Sí (1 Punto)</span></label>
+                                <label class="radio-label flex items-center cursor-pointer"><input type="radio" name="donacion_limpieza" value="0" data-points="0" class="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"> <span class="text-sm">No (0 Puntos)</span></label>
+                            </div>
+                        </div>
+
+                        <!-- Puntos 2 -->
+                        <div class="bg-gray-50 p-4 rounded-lg border border-gray-100">
+                            <p class="text-sm font-semibold mb-2 leading-tight">¿Donaste (especie/efectivo) para C. de Rehabilitación o Jornada Hosp.?</p>
+                            <div class="flex space-x-4">
+                                <label class="radio-label flex items-center cursor-pointer"><input type="radio" name="donacion_rehab" value="1" data-points="1" class="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"> <span class="text-sm">Sí (1 Punto)</span></label>
+                                <label class="radio-label flex items-center cursor-pointer"><input type="radio" name="donacion_rehab" value="0" data-points="0" class="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"> <span class="text-sm">No (0 Puntos)</span></label>
+                            </div>
+                        </div>
+
+                        <!-- Puntos 3 -->
+                        <div class="bg-gray-50 p-4 rounded-lg border border-gray-100">
+                            <p class="text-sm font-semibold mb-2">La Puntualidad a los matutinos:</p>
+                            <div class="flex flex-wrap gap-4">
+                                <label class="radio-label flex items-center cursor-pointer"><input type="radio" name="punt_matutinos" value="2" data-points="2" class="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"> <span class="text-sm">Buena (2 Pts)</span></label>
+                                <label class="radio-label flex items-center cursor-pointer"><input type="radio" name="punt_matutinos" value="1" data-points="1" class="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"> <span class="text-sm">Regular (1 Pt)</span></label>
+                                <label class="radio-label flex items-center cursor-pointer"><input type="radio" name="punt_matutinos" value="0" data-points="0" class="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"> <span class="text-sm">Mala (0 Pts)</span></label>
+                            </div>
+                        </div>
+
+                        <!-- Puntos 4 -->
+                        <div class="bg-gray-50 p-4 rounded-lg border border-gray-100">
+                            <p class="text-sm font-semibold mb-2">¿Cumplí con mi función de servir en la Red que sirvo?</p>
+                            <div class="flex space-x-4">
+                                <label class="radio-label flex items-center cursor-pointer"><input type="radio" name="cumpli_servir" value="1" data-points="1" class="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"> <span class="text-sm">Sí (1 Punto)</span></label>
+                                <label class="radio-label flex items-center cursor-pointer"><input type="radio" name="cumpli_servir" value="0" data-points="0" class="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"> <span class="text-sm">No (0 Puntos)</span></label>
+                            </div>
+                        </div>
+
+                        <!-- Puntos 5 -->
+                        <div class="bg-gray-50 p-4 rounded-lg border border-gray-100">
+                            <p class="text-sm font-semibold mb-2">La puntualidad a los servicios:</p>
+                            <div class="flex flex-wrap gap-4">
+                                <label class="radio-label flex items-center cursor-pointer"><input type="radio" name="punt_servicios" value="2" data-points="2" class="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"> <span class="text-sm">Buena (2 Pts)</span></label>
+                                <label class="radio-label flex items-center cursor-pointer"><input type="radio" name="punt_servicios" value="1" data-points="1" class="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"> <span class="text-sm">Regular (1 Pt)</span></label>
+                                <label class="radio-label flex items-center cursor-pointer"><input type="radio" name="punt_servicios" value="0" data-points="0" class="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"> <span class="text-sm">Mala (0 Pts)</span></label>
+                            </div>
+                        </div>
+
+                        <!-- Puntos 6 -->
+                        <div class="bg-gray-50 p-4 rounded-lg border border-gray-100">
+                            <p class="text-sm font-semibold mb-2">¿Cuántas veces apoyé a realizar el aseo u ofrendé para ello?</p>
+                            <div class="flex space-x-4 mb-2">
+                                <label class="radio-label flex items-center cursor-pointer"><input type="radio" name="apoyo_aseo" value="1" data-points="1" class="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"> <span class="text-sm">Lo Hice (1 Punto)</span></label>
+                                <label class="radio-label flex items-center cursor-pointer"><input type="radio" name="apoyo_aseo" value="0" data-points="0" class="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"> <span class="text-sm">No (0 Puntos)</span></label>
+                            </div>
+                            <input type="number" min="0" data-points-input placeholder="Cantidad de veces (se sumará al total)..." class="text-sm w-full bg-transparent border-b border-gray-300 outline-none py-1 focus:border-blue-500 mt-1">
+                        </div>
+
+                    </div>
+                </section>
+
+                <section>
+                    <h2 class="text-lg font-bold text-blue-800 uppercase border-b border-blue-100 pb-2 mb-4">Reflexión Personal y Disciplinas</h2>
+                    <div class="space-y-4">
+                        <div class="flex flex-col">
+                            <label class="text-sm font-semibold mb-1">¿Cuántas veces te conectaste y cuántas veces participaste en los Matutinos orando?</label>
+                            <div class="grid grid-cols-2 gap-4 mt-1">
+                                <div>
+                                    <label class="text-xs text-slate-500 font-medium">Veces que me conecté:</label>
+                                    <input type="number" min="0" data-points-input class="form-input rounded-md border-gray-300 shadow-sm focus:border-blue-500 bg-white px-3 py-2 border w-full">
+                                </div>
+                                <div>
+                                    <label class="text-xs text-slate-500 font-medium">Veces que participé orando:</label>
+                                    <input type="number" min="0" data-points-input class="form-input rounded-md border-gray-300 shadow-sm focus:border-blue-500 bg-white px-3 py-2 border w-full">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex flex-col">
+                            <label class="text-sm font-semibold mb-1">¿Qué cambio aplicaré para ya no fallar en mi función y responsabilidad de servir?</label>
+                            <textarea class="form-input rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-gray-50 px-3 py-2 border w-full auto-expand" rows="1"></textarea>
+                        </div>
+
+                        <!-- Puntos 7 -->
+                        <div class="bg-gray-50 p-4 rounded-lg border border-gray-100">
+                            <p class="text-sm font-semibold mb-2">¿Cómo fueron mis disciplinas espirituales en estos días?</p>
+                            <div class="flex flex-wrap gap-4">
+                                <label class="radio-label flex items-center cursor-pointer"><input type="radio" name="disciplinas_esp" value="2" data-points="2" class="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"> <span class="text-sm">Buena (2 Pts)</span></label>
+                                <label class="radio-label flex items-center cursor-pointer"><input type="radio" name="disciplinas_esp" value="1" data-points="1" class="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"> <span class="text-sm">Regular (1 Pt)</span></label>
+                                <label class="radio-label flex items-center cursor-pointer"><input type="radio" name="disciplinas_esp" value="0" data-points="0" class="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"> <span class="text-sm">Mal (0 Pts)</span></label>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col">
+                            <label class="text-sm font-semibold mb-1">¿A qué me comprometo para mejorar estos días que faltan del año, en las diferentes Disciplinas?</label>
+                            <textarea class="form-input rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-gray-50 px-3 py-2 border w-full auto-expand" rows="1"></textarea>
+                        </div>
+                    </div>
+                </section>
+
+                <section>
+                    <h2 class="text-lg font-bold text-blue-800 uppercase border-b border-blue-100 pb-2 mb-4">Discipulado y Familia</h2>
+                    <div class="space-y-4">
+                        
+                        <!-- Puntos 8 -->
+                        <div class="bg-gray-50 p-4 rounded-lg border border-gray-100">
+                            <p class="text-sm font-semibold mb-2 leading-tight">¿En este mes fuí un buen Discipulador; en recordarle y animar al discípulo a sus disciplinas espirituales?</p>
+                            <div class="flex space-x-4">
+                                <label class="radio-label flex items-center cursor-pointer"><input type="radio" name="buen_discipulador" value="1" data-points="1" class="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"> <span class="text-sm">Sí (1 Punto)</span></label>
+                                <label class="radio-label flex items-center cursor-pointer"><input type="radio" name="buen_discipulador" value="0" data-points="0" class="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"> <span class="text-sm">No (0 Puntos)</span></label>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col">
+                            <label class="text-sm font-semibold mb-2">¿Me dí el tiempo de conocer o acercarme y tratar algún integrante nuevo de Naciones a la Luz?</label>
+                            <div class="flex space-x-4 mb-2">
+                                <label class="radio-label flex items-center cursor-pointer"><input type="radio" name="conocer_nuevo" value="1" data-points="1" class="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"> <span class="text-sm">Sí (1 Punto)</span></label>
+                                <label class="radio-label flex items-center cursor-pointer"><input type="radio" name="conocer_nuevo" value="0" data-points="0" class="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"> <span class="text-sm">No (0 Puntos)</span></label>
+                            </div>
+                            <textarea class="form-input rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-gray-50 px-3 py-2 border w-full auto-expand" placeholder="Describe brevemente..." rows="1"></textarea>
+                        </div>
+
+                        <div class="flex flex-col">
+                            <label class="text-sm font-semibold mb-1">¿Cuántas veces exhortaste a algún integrante de Naciones a la Luz? y ¿En qué área lo animaste a continuar adelante?</label>
+                            <div class="flex flex-col sm:flex-row gap-4 mt-1">
+                                <div class="w-full sm:w-1/3">
+                                    <label class="text-xs text-slate-500 font-medium">Cantidad de veces:</label>
+                                    <input type="number" min="0" data-points-input class="form-input rounded-md border-gray-300 shadow-sm focus:border-blue-500 bg-white px-3 py-2 border w-full">
+                                </div>
+                                <div class="w-full sm:w-2/3">
+                                    <label class="text-xs text-slate-500 font-medium">Área en la que lo animé:</label>
+                                    <textarea class="form-input rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-gray-50 px-3 py-2 border w-full auto-expand" rows="1"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col">
+                            <label class="text-sm font-semibold mb-1">Tiempo de calidad o actividad Familiar que tuviste con tu Familia y ¿cuántas veces?</label>
+                            <div class="flex flex-col sm:flex-row gap-4 mt-1">
+                                <div class="w-full sm:w-1/3">
+                                    <label class="text-xs text-slate-500 font-medium">Cantidad de veces:</label>
+                                    <input type="number" min="0" data-points-input class="form-input rounded-md border-gray-300 shadow-sm focus:border-blue-500 bg-white px-3 py-2 border w-full">
+                                </div>
+                                <div class="w-full sm:w-2/3">
+                                    <label class="text-xs text-slate-500 font-medium">Actividad realizada:</label>
+                                    <textarea class="form-input rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-gray-50 px-3 py-2 border w-full auto-expand" rows="1"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col">
+                            <label class="text-sm font-semibold mb-2">¿Cómo consideras tu función de Discipulador? ¿Excelente, regular o mala? y... ¿por qué razón?</label>
+                            <div class="flex flex-wrap gap-4 mb-2">
+                                <label class="radio-label flex items-center cursor-pointer"><input type="radio" name="funcion_discipulador" value="2" data-points="2" class="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"> <span class="text-sm">Excelente (2 Pts)</span></label>
+                                <label class="radio-label flex items-center cursor-pointer"><input type="radio" name="funcion_discipulador" value="1" data-points="1" class="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"> <span class="text-sm">Regular (1 Pt)</span></label>
+                                <label class="radio-label flex items-center cursor-pointer"><input type="radio" name="funcion_discipulador" value="0" data-points="0" class="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"> <span class="text-sm">Mala (0 Pts)</span></label>
+                            </div>
+                            <textarea class="form-input rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-gray-50 px-3 py-2 border w-full auto-expand" placeholder="Razón..." rows="2"></textarea>
+                        </div>
+
+                        <!-- Puntos 9 -->
+                        <div class="bg-gray-50 p-4 rounded-lg border border-gray-100">
+                            <p class="text-sm font-semibold mb-2">¿Cumpliste Con Tus Tareas De Las Clases de Liderazgo?</p>
+                            <div class="flex space-x-4">
+                                <label class="radio-label flex items-center cursor-pointer"><input type="radio" name="tareas_liderazgo" value="1" data-points="1" class="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"> <span class="text-sm">Sí (1 Punto)</span></label>
+                                <label class="radio-label flex items-center cursor-pointer"><input type="radio" name="tareas_liderazgo" value="0" data-points="0" class="mr-2 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"> <span class="text-sm">No (0 Puntos)</span></label>
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+
+                <section class="bg-blue-50/50 p-5 rounded-xl border border-blue-100">
+                    <h2 class="text-md font-bold text-blue-800 mb-4 text-center italic">¿Cómo te podemos apoyar a orar para esta semana, en las diferentes áreas?</h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="flex flex-col">
+                            <label class="text-sm font-semibold mb-1 text-slate-700">• Personal:</label>
+                            <textarea class="form-input rounded-md border-gray-300 shadow-sm focus:border-blue-500 bg-white px-3 py-2 border w-full auto-expand" rows="1"></textarea>
+                        </div>
+                        <div class="flex flex-col">
+                            <label class="text-sm font-semibold mb-1 text-slate-700">• Familiar:</label>
+                            <textarea class="form-input rounded-md border-gray-300 shadow-sm focus:border-blue-500 bg-white px-3 py-2 border w-full auto-expand" rows="1"></textarea>
+                        </div>
+                        <div class="flex flex-col">
+                            <label class="text-sm font-semibold mb-1 text-slate-700">• Laboral:</label>
+                            <textarea class="form-input rounded-md border-gray-300 shadow-sm focus:border-blue-500 bg-white px-3 py-2 border w-full auto-expand" rows="1"></textarea>
+                        </div>
+                        <div class="flex flex-col">
+                            <label class="text-sm font-semibold mb-1 text-slate-700">• Otro:</label>
+                            <textarea class="form-input rounded-md border-gray-300 shadow-sm focus:border-blue-500 bg-white px-3 py-2 border w-full auto-expand" rows="1"></textarea>
+                        </div>
+                    </div>
+                </section>
+
+                <div class="mt-8 pt-6 border-t-2 border-slate-200 flex flex-col items-center justify-center bg-slate-50 p-6 rounded-lg">
+                    <h2 class="text-xl font-bold text-slate-600 uppercase tracking-widest mb-2">Puntaje Total</h2>
+                    <div class="text-5xl font-black text-blue-700" id="total-score-display">0</div>
+                    <p class="text-xs text-slate-400 mt-2 text-center max-w-sm">Este puntaje se calcula automáticamente en base a las opciones seleccionadas que tienen valor en puntos.</p>
+                </div>
+
+            </div>
+            
+            <!-- Marca de agua sutil al final -->
+            <div class="mt-8 text-center text-[10px] text-gray-300 font-medium">
+                Generado a través del Sistema de Evaluación • <span id="current-date-watermark"></span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Establecer fecha de marca de agua
+        document.getElementById('current-date-watermark').innerText = new Date().toLocaleDateString();
+
+        // 1. Lógica para expandir textareas automáticamente
+        const textareas = document.querySelectorAll('.auto-expand');
+        textareas.forEach(ta => {
+            ta.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = (this.scrollHeight) + 'px';
+            });
+        });
+
+        // 2. Lógica para el cálculo en vivo del Puntaje
+        const pointRadios = document.querySelectorAll('input[type="radio"][data-points]');
+        const pointInputs = document.querySelectorAll('input[type="number"][data-points-input]');
+        const scoreDisplay = document.getElementById('total-score-display');
+
+        function calculateScore() {
+            let total = 0;
+            // Buscar todos los radios seleccionados que tengan el atributo data-points
+            const checkedRadios = document.querySelectorAll('input[type="radio"][data-points]:checked');
+            checkedRadios.forEach(radio => {
+                total += parseInt(radio.getAttribute('data-points'), 10) || 0;
+            });
+
+            // Sumar los campos numéricos
+            pointInputs.forEach(input => {
+                const val = parseInt(input.value, 10);
+                if (!isNaN(val) && val > 0) {
+                    total += val;
+                }
+            });
+
+            scoreDisplay.innerText = total;
+            
+            // Efecto visual rápido al cambiar puntos
+            scoreDisplay.classList.add('text-green-500', 'scale-110');
+            scoreDisplay.classList.remove('text-blue-700');
+            setTimeout(() => {
+                scoreDisplay.classList.remove('text-green-500', 'scale-110');
+                scoreDisplay.classList.add('text-blue-700');
+                scoreDisplay.style.transition = "all 0.3s ease";
+            }, 300);
+        }
+
+        pointRadios.forEach(radio => {
+            radio.addEventListener('change', calculateScore);
+        });
+
+        pointInputs.forEach(input => {
+            input.addEventListener('input', calculateScore);
+        });
+
+        // 3. Limpiar Formulario
+        function clearForm() {
+            if(confirm("¿Estás seguro de que deseas limpiar todo el formulario? Se borrarán todos los datos.")) {
+                const inputs = document.querySelectorAll('input:not([type="radio"]), textarea');
+                inputs.forEach(input => input.value = '');
+                
+                pointRadios.forEach(radio => radio.checked = false);
+                
+                // Reiniciar texto del encabezado por defecto
+                document.querySelector('input[value="Del 1 al 29 De Agosto Del 2026"]').value = "Del 1 al 29 De Agosto Del 2026";
+                
+                // Reset heights de textarea
+                textareas.forEach(ta => {
+                    ta.style.height = 'auto';
+                });
+                
+                calculateScore();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        // 4. Lógica para Generar y Descargar la Imagen usando html2canvas
+        function generateImage() {
+            const btn = document.getElementById('btn-generate');
+            const originalText = btn.innerHTML;
+            const captureArea = document.getElementById('capture-area');
+            
+            // Estado de carga en el botón
+            btn.innerHTML = `<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Generando...`;
+            btn.disabled = true;
+
+            // Preparamos el contenedor para una mejor captura (apariencia impresa limpia)
+            captureArea.classList.add('capture-mode');
+
+            // html2canvas Options
+            const options = {
+                scale: 2, // Mayor calidad
+                useCORS: true,
+                backgroundColor: "#ffffff",
+                windowWidth: captureArea.scrollWidth,
+                onclone: (clonedDoc) => {
+                    // Ajustes visuales extra en el DOM clonado si es necesario
+                    const clonedTextareas = clonedDoc.querySelectorAll('textarea');
+                    clonedTextareas.forEach(ta => {
+                        // Aseguramos que el contenido completo se vea renderizado en el clon
+                        ta.style.height = ta.scrollHeight + 'px';
+                    });
+                }
+            };
+
+            // Pequeña pausa para asegurar que el DOM actualice clases
+            setTimeout(() => {
+                html2canvas(captureArea, options).then(canvas => {
+                    // Restauramos vista normal
+                    captureArea.classList.remove('capture-mode');
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+
+                    // Crear y forzar descarga
+                    const imgData = canvas.toDataURL('image/png');
+                    const link = document.createElement('a');
+                    link.download = `Evaluacion_Naciones_a_la_Luz_${new Date().getTime()}.png`;
+                    link.href = imgData;
+                    link.click();
+                }).catch(err => {
+                    console.error("Error al generar la imagen: ", err);
+                    alert("Ocurrió un error al generar la imagen. Inténtalo de nuevo.");
+                    captureArea.classList.remove('capture-mode');
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                });
+            }, 300);
+        }
+    </script>
+</body>
+</html>
